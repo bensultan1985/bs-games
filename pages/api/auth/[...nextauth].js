@@ -11,6 +11,7 @@ import Cookies from "cookies";
 import { randomUUID } from "crypto";
 import { getCookie, setCookie } from "cookies-next";
 import { encode, decode } from "next-auth/jwt";
+import { type } from "os";
 
 //expected production error details https://github.com/nextauthjs/next-auth/discussions/4394 bottom
 
@@ -89,6 +90,7 @@ export default async function handler(req, res) {
           id: userAccount.id,
           name: `${userAccount.firstName} ${userAccount.lastName}`,
           email: userAccount.email,
+          test: "test",
         };
         console.log("Session.user: ", session.user);
       } else if (
@@ -98,10 +100,22 @@ export default async function handler(req, res) {
           (typeof session.user !== typeof undefined &&
             typeof session.user.id === typeof undefined))
       ) {
-        session.user = token.user;
+        session.user = {
+          email: token.user.email,
+          emailVerified: token.user.emailVerified,
+          image: token.user.image,
+          name: token.user.name,
+          type: token.user.type,
+          test: "test",
+        };
       } else if (typeof token !== typeof undefined) {
         session.token = token;
       }
+      if (session) {
+        // session.user = { ...session.user, test: "test" };
+      }
+      if (session?.user?.password) delete session.user.password;
+      if (session?.user?.id) delete session.user.id;
       console.log("Session: ", session);
       return Promise.resolve(session);
     },

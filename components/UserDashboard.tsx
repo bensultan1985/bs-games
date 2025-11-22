@@ -3,6 +3,9 @@ import { CreateToDo } from "./CreateToDo";
 import { ToDoList } from "./ToDoList";
 
 export function UserDashboard(props: any) {
+  //get next-auth token from cookie
+  const token = props.session;
+  console.log(token);
   const { user } = props;
   return (
     <></>

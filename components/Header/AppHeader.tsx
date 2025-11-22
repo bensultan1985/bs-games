@@ -13,6 +13,8 @@ import { IconUser } from "@tabler/icons";
 import { useMediaQuery } from "../../utilities/responsiveness";
 
 export function AppHeader() {
+  const sesh = useSession();
+  console.log(sesh);
   const { data: session } = useSession();
   //isMobile true if mobile width
   const isMobile = useMediaQuery("(max-width: 800px)");

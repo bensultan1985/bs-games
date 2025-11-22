@@ -13,6 +13,9 @@ import { useState } from "react";
 import Auth from "../components/Auth";
 import styles from "../styles/Home.module.css";
 import { brandConfig } from "../config";
+import { useRouter } from "next/router"; // or next/router in pages directory
+import { Notification } from "@mantine/core";
+import { IconX } from "@tabler/icons";
 
 //future usage
 const emailValidityBasic = /^\S+@\S+$/;
@@ -20,7 +23,10 @@ const emailValidityComprehensive =
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 export default function Register() {
+  const router = useRouter();
   const [checked, setChecked] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const form = useForm({
     initialValues: {
       email: "",
@@ -56,11 +62,52 @@ export default function Register() {
 
   return (
     <>
+      {showError && (
+        <div
+          style={{
+            float: "right",
+            position: "absolute",
+            right: "0",
+            margin: "10px",
+            marginTop: "50px",
+          }}
+        >
+          <Notification
+            onClick={() => {
+              setShowError(false);
+            }}
+            color="red"
+            title="Bummer!"
+          >
+            Something went wrong
+          </Notification>
+        </div>
+      )}
+      {showSuccess && (
+        <div
+          style={{
+            float: "right",
+            position: "absolute",
+            right: "0",
+            margin: "10px",
+            marginTop: "50px",
+          }}
+        >
+          <Notification
+            onClick={() => {
+              setShowSuccess(false);
+            }}
+            color="green"
+            title="Success!"
+          >
+            Your account was created!
+          </Notification>
+        </div>
+      )}
+
       <main className={styles.main}>
         <Title>Register</Title>
-
         <Auth labelText="register"></Auth>
-
         <Box sx={{ maxWidth: 300 }} mx="auto">
           <form
             onSubmit={form.onSubmit(async (values) => {
@@ -74,8 +121,15 @@ export default function Register() {
                   id: 1,
                 }),
               });
-              const parsedResponse = await response.json();
-              console.log(parsedResponse);
+              console.log(response);
+              if (response.ok) {
+                console.log("User created.");
+                setShowSuccess(true);
+                router.push("/account");
+              } else {
+                setShowError(true);
+                console.log("User not created.");
+              }
             })}
           >
             <TextInput
