@@ -23,7 +23,7 @@ const Beardle: NextPage = (props) => {
         width: "100%",
         height: "100%",
       }}
-      src="https://beardle.app"
+      src="https://beardle.herokuapp.com"
     ></iframe>
   );
 };
